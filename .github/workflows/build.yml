@@ -1,0 +1,46 @@
+name: Android Build
+
+on:
+  push:
+    branches: [ "main" ] # ทำงานเมื่อ push เข้า branch main
+
+jobs:
+  android-build:
+    runs-on: ubuntu-latest # ใช้ Ubuntu บิวด์ Android ได้สบาย ๆ และฟรี
+
+    steps:
+    # 1. ดึงโค้ดโปรเจกต์ลงมา
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. ตั้งค่า Node.js และจัดการ Cache ของ npm/yarn
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm' # หรือเปลี่ยนเป็น 'yarn' ถ้าโปรเจกต์ใช้ yarn
+
+    # 3. ติดตั้งโปรแกรม Java (จำเป็นสำหรับ Android SDK)
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu' # นิยมใช้ในคอมมูนิตี้ Android
+        java-version: '17'   # ตรวจสอบเวอร์ชันให้ตรงกับที่โปรเจกต์ของคุณระบุ
+
+    # 4. ติดตั้ง dependencies ของ React Native
+    - name: Install dependencies
+      run: npm install # หรือ yarn install
+
+    # 5. สั่งให้โปรแกรม Gradle ทำการบิวด์แอปพลิเคชัน (แบบ Release)
+    - name: Build Android Release
+      run: |
+        cd android
+        chmod +x gradlew
+        ./gradlew assembleRelease --no-daemon
+
+    # 6. เก็บไฟล์ .apk ที่บิวด์เสร็จแล้วออกมา เพื่อให้เราดาวน์โหลดได้บนเว็บ
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: test
+        path: android/app/build/outputs/apk/release/test.apk
