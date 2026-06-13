@@ -9,10 +9,6 @@ env:
 
 jobs:
   android-build:
-    runs-on: ubuntu-latest
-
-jobs:
-  android-build:
     runs-on: ubuntu-latest # ใช้ Ubuntu บิวด์ Android ได้สบาย ๆ และฟรี
 
     steps:
