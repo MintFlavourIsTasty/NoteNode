@@ -2,7 +2,14 @@ name: Android Build
 
 on:
   push:
-    branches: [ "main" ] # ทำงานเมื่อ push เข้า branch main
+    branches: [ "main" ]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  android-build:
+    runs-on: ubuntu-latest
 
 jobs:
   android-build:
